@@ -4,20 +4,75 @@ Description:
   String
 
 Metadata:
-  metadata section
+  - Label:
+      default: ParameterGroupDescription
+    Parameters:
+    - Parameter
 
 Parameters:
-  set of parameters
+  paramName:
+    Description: 
+    Type: String|Number|CommaDelimitedList
+    Default: -
 
 Mappings:
-  set of mappings
+  AWSTemplateFormatVersion: "2010-09-09"
+  Mappings: 
+    RegionMap: 
+      us-east-1:
+        gp2: ami-09d95fab7fff3776c
+      us-west-1:
+        gp2: ami-04e59c05167ea7bd5
+      eu-west-1:
+        gp2: ami-0ea3405d2d2522162
+      ap-northeast-1:
+        gp2: ami-0a1c2ec61571737db
+      ap-southeast-1:
+        gp2: ami-0615132a0f36d24f4
+  Resources: 
+    myEC2Instance: 
+      Type: "AWS::EC2::Instance"
+      Properties: 
+        ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", gp2]
+        InstanceType: t2.micro
+  Outputs:
+      Region:
+          Description: Current Region
+          Value: !FindInMap [RegionMap, !Ref "AWS::Region", gp2]
+      InstanceId:
+          Description: InstanceId of the newly created EC2 instance
+          Value:
+              Ref: myEC2Instance
+      AZ:
+          Description: Availability Zone of the newly created EC2 instance
+          Value:
+              Fn::GetAtt:
+              - myEC2Instance
+              - AvailabilityZone
+      PublicDNS:
+          Description: Public DNSName of the newly created EC2 instance
+          Value:
+              Fn::GetAtt:
+              - myEC2Instance
+              - PublicDnsName
+      PublicIP:
+          Description: Public IP address of the newly created EC2 instance
+          Value:
+              Fn::GetAtt:
+              - myEC2Instance
+              - PublicIp
 
 Conditions:
-  set of conditions
+  Conditions:
+    LogicalId: IntrinsicFunction
 
 Resources:
-  set of resources
-  # Mandatory section for the cloudformation
+  resources
+  
 
 Outputs:
-  set of outputs
+  LogicalID:
+    Description: Information about the value
+    Value:
+    Export: 
+      Name:
