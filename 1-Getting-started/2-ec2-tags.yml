@@ -19,4 +19,4 @@ Resources:
           Value: demo-ec2
         - Key: createdBy
           Value: DevOps Team
-        
+                 

@@ -1,4 +1,3 @@
-
 AWSTemplateFormatVersion: "2010-09-09"
 Description: To create a VPC, 2 Subnets, Security Group, IGW, NAT, ec2
 
@@ -17,7 +16,7 @@ Parameters:
     Description: CIDR Block for Private Subnet
     Type: String
     Default: 10.0.2.0/24
-  
+
   KeyName:
     Description: A key for ec2-instance
     Type: String
@@ -29,10 +28,10 @@ Parameters:
     Default: ami-00c39f71452c08778
 
   InstanceType:
-      Description: WebServer EC2 instance type
-      Type: String
-      Default: t2.micro
-      AllowedValues:
+    Description: WebServer EC2 instance type
+    Type: String
+    Default: t2.micro
+    AllowedValues:
       - t1.micro
       - t2.nano
       - t2.micro
@@ -41,21 +40,21 @@ Parameters:
       - t2.large
       - m1.small
       - m1.medium
-      ConstraintDescription: must be a valid EC2 instance type.
+    ConstraintDescription: must be a valid EC2 instance type.
 
   SecurityGroupPorts:
     Description: Simple Description of a Number Parameter, with MinValue and MaxValue
     Type: Number
-    AllowedValues: 
+    AllowedValues:
       - 80
       - 443
-      - 22    
+      - 22
 
   SSHLocation:
     Description: The IP address range that can be used to SSH to the EC2 instances
     Type: String
-    MinLength: '9'
-    MaxLength: '18'
+    MinLength: "9"
+    MaxLength: "18"
     Default: 0.0.0.0/0
     AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
     ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
@@ -97,7 +96,7 @@ Resources:
       Tags:
         - Key: Name
           Value: SubnetPriv
-    
+
   igwName:
     Type: AWS::EC2::InternetGateway
     Properties:
@@ -114,8 +113,8 @@ Resources:
   # https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-route-table.html
   RouteTable:
     Type: AWS::EC2::RouteTable
-    Properties: 
-      Tags: 
+    Properties:
+      Tags:
         - Key: keyname
           Value: value
       VpcId: !Ref myVPC
@@ -134,38 +133,38 @@ Resources:
       RouteTableId: !Ref RouteTable
 
   NATGateway:
-   Type: AWS::EC2::NatGateway
-   Properties:
+    Type: AWS::EC2::NatGateway
+    Properties:
       AllocationId: !GetAtt NATGatewayEIP.AllocationId
       SubnetId: !Ref PubSubnet
       Tags:
-      - Key: stack
-        Value: production
-        
+        - Key: stack
+          Value: production
+
   NATGatewayEIP:
     Type: AWS::EC2::EIP
     Properties:
-        Domain: myVPC
+      Domain: myVPC
 
   RouteNATGateway:
     DependsOn: NATGateway
     Type: AWS::EC2::Route
     Properties:
-        RouteTableId: !Ref RouteTable
-        DestinationCidrBlock: !Ref SubnetPubCIDR
-        NatGatewayId: !Ref NATGateway
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: !Ref SubnetPubCIDR
+      NatGatewayId: !Ref NATGateway
 
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable SSH access via port 22
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: !Ref SecurityGroupPorts
-        ToPort: !Ref SecurityGroupPorts
-        CidrIp:
-          Ref: SSHLocation
-  
+        - IpProtocol: tcp
+          FromPort: !Ref SecurityGroupPorts
+          ToPort: !Ref SecurityGroupPorts
+          CidrIp:
+            Ref: SSHLocation
+
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
@@ -174,14 +173,12 @@ Resources:
       InstanceType:
         Ref: InstanceType
       SecurityGroups:
-      - Ref: InstanceSecurityGroup
+        - Ref: InstanceSecurityGroup
       KeyName:
-        Ref: KeyName      
+        Ref: KeyName
       BlockDeviceMappings:
-        -
-          DeviceName: /dev/xvda
+        - DeviceName: /dev/xvda
           Ebs:
-            VolumeType: gp2            
+            VolumeType: gp2
             DeleteOnTermination: true
             VolumeSize: !Ref VolumeSize
-  

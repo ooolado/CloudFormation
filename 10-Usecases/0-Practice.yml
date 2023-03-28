@@ -1,0 +1,16 @@
+Mappings:
+  
+  mapName:
+    mapping01:
+      key01:
+        Name: value01
+    mapping02:
+      key02:
+        Name: value02
+  
+
+Parameters:
+  paramName:
+    Description: 
+    Type: String|Number|CommaDelimitedList
+    Default: -

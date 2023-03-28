@@ -5,3 +5,9 @@ Resources:
     Type: AWS::S3::Bucket    
     Properties:
       BucketName: vamsi-chunduru-27-05-22-demo
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+   
